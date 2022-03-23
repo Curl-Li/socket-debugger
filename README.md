@@ -2,7 +2,27 @@
 
 > a tool for debugging socket connection
 
-#### Build Setup
+## description
+
+### Tcp-Hex
+
+<img src="./tcp-hex.png" style="zoom:50%;" />
+
+### Tcp-Text
+
+<img src="./tcp-text.png" style="zoom:50%;" />
+
+### Websocket-Hex
+
+> websocket hex data is sended by binary message. 
+
+<img src="./websocket-hex.png" style="zoom:50%;" />
+
+### Websocket-Text
+
+<img src="./websocket-text.png" style="zoom:50%;" />
+
+## Build Setup
 
 ``` bash
 # install dependencies

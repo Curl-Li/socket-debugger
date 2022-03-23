@@ -1,6 +1,6 @@
 {
   "name": "socket-debugger",
-  "version": "0.0.1",
+  "version": "v0.0.1-beta",
   "author": "Curl-Li",
   "description": "a tool for debugging socket connection",
   "license": "MIT",
@@ -8,6 +8,8 @@
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
     "build:mac": "node .electron-vue/build.js && electron-builder --macos",
+    "build:win": "node .electron-vue/build.js && electron-builder -w",
+    "build:linux": "node .electron-vue/build.js && electron-builder -l",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
@@ -17,8 +19,14 @@
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
-    "postinstall": "npm run lint:fix"
+    "postinstall": "npm run lint:fix",
+    "pack:pre": "node .electron-vue/build.js",
+    "pack:mac:publish": "electron-builder -m -p always",
+    "pack:macm1:publish": "electron-builder -m --arm64 -p always -c.artifactName='${productName} M1 ${arch} ${version}.${ext}'",
+    "pack:win:publish": "electron-builder -w -p always",
+    "pack:linux:publish": "electron-builder -l -p always"
   },
+  "repository": "github:Curl-Li/socket-debugger",
   "build": {
     "productName": "socket-debugger",
     "appId": "com.curl-li.socket-debugger",
@@ -44,13 +52,30 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icons/icon.png",
+      "category": "public.app-category.developer-tools",
+      "target": [
+        "dmg"
+      ]
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/icon.png",
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false,
+      "menuCategory": true,
+      "allowElevation": false
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "build/icons/icon.png",
+      "category": "Utility",
+      "target": [
+        "AppImage"
+      ]
     }
   },
   "dependencies": {
@@ -59,6 +84,7 @@
     "faye-websocket": "^0.11.4",
     "multispinner": "^0.2.1",
     "vue": "^2.5.16",
+    "vue-devtools": "^5.1.4",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
@@ -81,10 +107,10 @@
     "css-loader": "^0.28.11",
     "del": "^3.0.0",
     "devtron": "^1.4.0",
-    "electron": "^2.0.4",
+    "electron": "13.0.0",
     "electron-builder": "^22.14.13",
-    "electron-debug": "^1.5.0",
-    "electron-devtools-installer": "^2.2.4",
+    "electron-debug": "^3.2.0",
+    "electron-devtools-installer": "^3.2.0",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-friendly-formatter": "^4.0.1",

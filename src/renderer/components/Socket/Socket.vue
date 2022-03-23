@@ -106,7 +106,7 @@ export default {
   name: 'websocket',
   data () {
     return {
-      client: new net.Socket(),
+      client: null,
       host: '',
       codec: 'text',
       enter: true,
@@ -118,10 +118,7 @@ export default {
     }
   },
   mounted () {
-    this.client.on('connect', this.onopen)
-    this.client.on('data', this.ondata)
-    this.client.on('close', this.onclose)
-    this.client.on('error', this.onerror)
+
   },
   watch: {
     boxMenuVisible (value) {
@@ -148,11 +145,16 @@ export default {
       if (hosts.length >= 2) {
         port = parseInt(hosts[1])
       }
-      this.client.connect(port, hosts[0])
+      this.client = net.createConnection(port, hosts[0].trim(), this.onopen)
       this.status = TcpStatus.Connecting
+      this.client.on('data', this.ondata)
+      this.client.on('close', this.onclose)
+      this.client.on('error', this.onerror)
     },
     shutdown () {
-      this.client.end()
+      if (this.client) {
+        this.client.end()
+      }
     },
     enterPressed (e) {
       // 回车按下事件
@@ -270,8 +272,7 @@ export default {
       })
     },
     onerror (event) {
-      console.log(event)
-      this.$message.error('socket error: ' + event.data)
+      this.$message.error('socket error: ' + event.message)
     },
     onclose (event) {
       this.status = TcpStatus.Shutdown

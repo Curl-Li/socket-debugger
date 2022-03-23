@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import { app, Menu, BrowserWindow } from 'electron'
 import '../renderer/store'
 
 /**
@@ -10,6 +10,8 @@ import '../renderer/store'
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
+
+const APP_ENV = (process.env.NODE_ENV === 'dev') ? 'dev' : 'production'
 
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
@@ -23,7 +25,13 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     height: 650,
     useContentSize: true,
-    width: 1100
+    width: 1100,
+    webPreferences: {
+      enableRemoteModule: true,
+      contextIsolation: false,
+      nodeIntegration: true, // 在网页中集成Node
+      nodeIntegrationInWorker: true // 是否在Web工作器中启用了Node集成
+    }
   })
 
   mainWindow.loadURL(winURL)
@@ -31,14 +39,71 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  // for mac copy paset shortcut
+  if (process.platform === 'darwin') {
+    const template = [
+      // { role: 'appMenu' },
+      {
+        label: app.name,
+        submenu: [
+          { role: 'about' },
+          { type: 'separator' },
+          { role: 'services' },
+          { type: 'separator' },
+          { role: 'hide' },
+          { role: 'hideothers' },
+          { role: 'unhide' },
+          { type: 'separator' },
+          { role: 'quit' }
+        ]
+      },
+      { role: 'editMenu' },
+      // { role: 'viewMenu' },
+      {
+        label: 'View',
+        submenu: [
+          ...(
+            (APP_ENV === 'production') ? [] : [{ role: 'toggledevtools' }]
+          ),
+          { role: 'togglefullscreen' }
+        ]
+      },
+      // { role: 'windowMenu' },
+      {
+        role: 'window',
+        submenu: [
+          { role: 'minimize' },
+          { role: 'zoom' },
+          { type: 'separator' },
+          { role: 'front' },
+          { type: 'separator' }
+          // { role: 'window' }
+        ]
+      },
+      {
+        role: 'help',
+        submenu: [
+          {
+            label: 'Learn More',
+            click: async () => {
+              const { shell } = require('electron')
+              await shell.openExternal('https://github.com/Curl-Li/socket-debugger')
+            }
+          }
+        ]
+      }
+    ]
+
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
+  }
 }
 
 app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  app.quit()
 })
 
 app.on('activate', () => {
