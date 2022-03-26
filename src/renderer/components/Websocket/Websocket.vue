@@ -187,7 +187,7 @@ export default {
             that.$refs.messages.scrollTop += 10
             n -= 10
           }
-        }, 20 / n)
+        }, 30 / n)
       })
     },
     send () {
@@ -263,7 +263,7 @@ export default {
       let msg = {}
       if (event.data instanceof ArrayBuffer) {
         let data = new Uint8Array(event.data)
-        msg = uint8Arr2HexStr(data)
+        msg = 'Hex: ' + uint8Arr2HexStr(data)
       } else {
         msg = 'Text: ' + event.data
       }
@@ -317,6 +317,7 @@ export default {
     color: #606266;
     font-size: 14px;
     display: flex;
+    overflow: hidden;
     flex-direction: column;
     .header {
       padding: 10px 15px;

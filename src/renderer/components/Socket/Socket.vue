@@ -186,7 +186,7 @@ export default {
             that.$refs.messages.scrollTop += 10
             n -= 10
           }
-        }, 20 / n)
+        }, 30 / n)
       })
     },
     send () {
@@ -207,11 +207,9 @@ export default {
         try {
           const cr = hexStr2Uint8Arr(this.input)
           let bs = Buffer.from(cr.arr)
-          console.log(typeof bs)
           this.client.write(bs)
           msg2 = 'Hex: ' + cr.str
         } catch (error) {
-          console.log(error)
           this.$message.error('please input right hex numer, like: 0x88 0x87.')
           return
         }
@@ -315,6 +313,7 @@ export default {
     color: #606266;
     font-size: 14px;
     display: flex;
+    overflow: hidden;
     flex-direction: column;
     .header {
       padding: 10px 15px;
@@ -378,7 +377,7 @@ export default {
       }
     }
     .messages::-webkit-scrollbar {
-      width: 2px;
+      width: 10px;
       height: 0.5px;
     }
     .send-box {

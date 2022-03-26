@@ -1,8 +1,9 @@
 export function uint8Arr2HexStr (arr) {
-  let str = 'Hex:'
+  let str = ''
   arr.forEach(ele => {
     str = str + ' ' + (ele < 16 ? '0x0' + ele.toString(16).toUpperCase() : '0x' + ele.toString(16).toUpperCase())
   })
+  str.trimStart()
   return str
 }
 
