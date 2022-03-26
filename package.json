@@ -1,6 +1,6 @@
 {
   "name": "socket-debugger",
-  "version": "v0.0.1-beta",
+  "version": "v0.0.2-beta",
   "author": "Curl-Li",
   "description": "a tool for debugging socket connection",
   "license": "MIT",
